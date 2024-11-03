@@ -1,11 +1,11 @@
 package services;
 
-import exceptions.InvalidGateException;
-import exceptions.InvalidParkingLotException;
-import exceptions.ParkingSpotNotAvailableException;
+import exceptions.*;
 import models.Ticket;
+
+import java.util.List;
 
 public interface TicketService {
     // Do not modify the method signatures, feel free to add new methods
-    public Ticket generateTicket(int gateId, String registrationNumber, String vehicleType) throws InvalidGateException, InvalidParkingLotException, ParkingSpotNotAvailableException;
+    public Ticket generateTicket(long gateId, String registrationNumber, String vehicleType, List<String> additionalServices) throws InvalidGateException, InvalidParkingLotException, ParkingSpotNotAvailableException, UnsupportedAdditionalService, AdditionalServiceNotSupportedByVehicle;
 }

@@ -1,5 +1,7 @@
 package services;
 
+import java.util.ArrayList;
+import java.util.List;
 import  java.util.Optional;
 import  java.util.Date;
 import  repositories.*;
@@ -23,7 +25,7 @@ public class TicketServiceImpl implements TicketService{
         this.strategy = stgy;
     }
 
-    public Ticket generateTicket(int gateId, String registrationNumber, String vehicleType) throws InvalidGateException, InvalidParkingLotException, ParkingSpotNotAvailableException{
+    public Ticket generateTicket(long gateId, String registrationNumber, String vehicleType, List<String> additionalServicesList) throws InvalidGateException, InvalidParkingLotException, ParkingSpotNotAvailableException, UnsupportedAdditionalService, AdditionalServiceNotSupportedByVehicle {
         Gate gate = verifyGate(gateId);
         ParkingLot parkingLot =  verifyParkingLot(gateId);
         VehicleType type = getVehicleType(vehicleType);
@@ -35,6 +37,22 @@ public class TicketServiceImpl implements TicketService{
         ParkingSpot spot = spotOpt.get();
         spot.setStatus(ParkingSpotStatus.OCCUPIED);
         Ticket newTicket = new Ticket();
+        if (additionalServicesList != null){
+            List<AdditionalService> additionalServices = new ArrayList<>();
+            for(String service :  additionalServicesList){
+                AdditionalService addService ;
+                try{
+                    addService = AdditionalService.valueOf(service);
+                }catch(IllegalArgumentException e){
+                    throw new UnsupportedAdditionalService("Service " + service + " not avaialble at this parkingLot");
+                }
+                if (! addService.getSupportedVehicleTypes().contains(vehicle.getVehicleType())){
+                    throw new AdditionalServiceNotSupportedByVehicle(service + " is not available for " + vehicle.getVehicleType().name() );
+                }
+                additionalServices.add(addService);
+            }
+            newTicket.setAdditionalServices(additionalServices);
+        }
         newTicket.setGate(gate);
         newTicket.setVehicle(vehicle);
         newTicket.setParkingAttendant(gate.getParkingAttendant());
@@ -73,7 +91,7 @@ public class TicketServiceImpl implements TicketService{
         }
     }
 
-    private Gate verifyGate(int gateId) throws InvalidGateException{
+    private Gate verifyGate(long gateId) throws InvalidGateException{
         Optional<Gate> gateOpt  = gateRepo.findById(gateId);
         if (gateOpt.isEmpty() || gateOpt.get().getType() != GateType.ENTRY){
             throw new InvalidGateException("There is no entry gate with given Id");

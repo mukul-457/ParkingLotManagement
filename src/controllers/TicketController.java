@@ -6,6 +6,8 @@ import dtos.ResponseStatus;
 import models.Ticket;
 import services.TicketService;
 
+import java.util.List;
+
 public class TicketController {
 
     private TicketService ticketService;
@@ -17,7 +19,7 @@ public class TicketController {
     public GenerateTicketResponseDto generateTicket(GenerateTicketRequestDto requestDto){
         GenerateTicketResponseDto responseDto = new GenerateTicketResponseDto();
         try{
-            Ticket ticket  = ticketService.generateTicket(requestDto.getGateId(), requestDto.getRegistrationNumber(),requestDto.getVehicleType());
+            Ticket ticket  = ticketService.generateTicket(requestDto.getGateId(), requestDto.getRegistrationNumber(),requestDto.getVehicleType(),requestDto.getAdditionalServices());
             responseDto.setTicket(ticket);
             responseDto.setResponseStatus(ResponseStatus.SUCCESS);
         }catch(Exception e){

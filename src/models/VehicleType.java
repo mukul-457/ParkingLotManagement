@@ -4,5 +4,7 @@ public enum VehicleType {
     CAR,
     BIKE,
     TRUCK,
-    SUV
+    SUV,
+    EV_CAR,
+    EV_BIKE;
 }

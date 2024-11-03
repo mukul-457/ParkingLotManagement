@@ -1,11 +1,15 @@
 package dtos;
 
+import java.util.List;
+
 public class GenerateTicketRequestDto {
     private int gateId;
     private String registrationNumber;
     private String vehicleType;
 
-    public int getGateId() {
+    private List<String> additionalServices;
+
+    public long getGateId() {
         return gateId;
     }
 
@@ -27,5 +31,12 @@ public class GenerateTicketRequestDto {
 
     public void setVehicleType(String vehicleType) {
         this.vehicleType = vehicleType;
+    }
+    public List<String> getAdditionalServices() {
+        return additionalServices;
+    }
+
+    public void setAdditionalServices(List<String> additionalServices) {
+        this.additionalServices = additionalServices;
     }
 }
